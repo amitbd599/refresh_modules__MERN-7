@@ -1,20 +1,12 @@
 import React from "react";
-import MenuBar from "../components/MenuBar";
 import RegisterForm from "../components/RegisterForm";
-import FooterBar from "../components/FooterBar";
+import MasterLayout from "../masterLayout/MasterLayout";
 
 const RegisterPage = () => {
   return (
-    <>
-      {/* MenuBar */}
-      <MenuBar />
-
-      {/* RegisterForm */}
+    <MasterLayout>
       <RegisterForm />
-
-      {/* FooterBar */}
-      <FooterBar />
-    </>
+    </MasterLayout>
   );
 };
 

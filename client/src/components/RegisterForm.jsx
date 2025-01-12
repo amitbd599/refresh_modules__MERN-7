@@ -1,7 +1,56 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
+import { ErrorToast, getBase64, IsEmpty } from "../helper/helper";
+import { register } from "../apiRequest/api";
+import { apiRequest, registerOne } from "../apiRequest/apiNew";
 const RegisterForm = () => {
+  let { emailRef, passwordRef, firstNameRef, lastNameRef, phoneRef } = useRef();
+  let [image, setImage] = useState("");
+
+  let getImage = async (file) => {
+    let result = await getBase64(file.target.files[0]);
+    setImage(result);
+  };
+
+  let submitData = async () => {
+    let email = emailRef.value;
+    let password = passwordRef.value;
+    let firstName = firstNameRef.value;
+    let lastName = lastNameRef.value;
+    let phone = phoneRef.value;
+    let img = image;
+
+    if (IsEmpty(email)) {
+      ErrorToast("Email is required.");
+    } else if (IsEmpty(password)) {
+      ErrorToast("Password is required.");
+    } else if (IsEmpty(firstName)) {
+      ErrorToast("First Name is required.");
+    } else if (IsEmpty(lastName)) {
+      ErrorToast("Last Name is required.");
+    } else if (IsEmpty(phone)) {
+      ErrorToast("Phone is required.");
+    } else if (IsEmpty(img)) {
+      ErrorToast("Image is required.");
+    } else {
+      let reqBody = { email, password, firstName, lastName, phone, img };
+      let result = await register(reqBody);
+
+      console.log(result);
+
+      // await registerOne(reqBody);
+      // await apiRequest("/register", reqBody);
+
+      if (result === true) {
+        emailRef.value = "";
+        passwordRef.value = "";
+        firstNameRef.value = "";
+        lastNameRef.value = "";
+        phoneRef.value = "";
+      }
+    }
+  };
+
   return (
     <section className='bg-gray-100 min-h-screen flex justify-center items-center'>
       <div className='relative py-3 sm:max-w-xl sm:mx-auto'>
@@ -16,6 +65,7 @@ const RegisterForm = () => {
                   Email
                 </label>
                 <input
+                  ref={(input) => (emailRef = input)}
                   className='border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
                   type='email'
                 />
@@ -25,6 +75,7 @@ const RegisterForm = () => {
                   Password
                 </label>
                 <input
+                  ref={(input) => (passwordRef = input)}
                   className='border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
                   type='password'
                 />
@@ -34,6 +85,7 @@ const RegisterForm = () => {
                   First Name
                 </label>
                 <input
+                  ref={(input) => (firstNameRef = input)}
                   className='border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
                   type='text'
                 />
@@ -43,6 +95,7 @@ const RegisterForm = () => {
                   Last Name
                 </label>
                 <input
+                  ref={(input) => (lastNameRef = input)}
                   className='border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
                   type='text'
                 />
@@ -52,6 +105,7 @@ const RegisterForm = () => {
                   Phone
                 </label>
                 <input
+                  ref={(input) => (phoneRef = input)}
                   className='border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
                   type='text'
                 />
@@ -61,6 +115,7 @@ const RegisterForm = () => {
                   Image
                 </label>
                 <input
+                  onChange={getImage}
                   className='border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
                   type='file'
                 />
@@ -68,7 +123,10 @@ const RegisterForm = () => {
             </div>
 
             <div className='mt-5'>
-              <button className='py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg'>
+              <button
+                onClick={submitData}
+                className='py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg'
+              >
                 Register
               </button>
             </div>
