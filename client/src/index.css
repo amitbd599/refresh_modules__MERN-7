@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    overflow-x: hidden;
+  }
   * {
     padding: 0;
     margin: 0;
@@ -12,4 +15,15 @@
     padding: 0;
     margin: 0;
   }
+}
+
+@layer components {
+}
+
+.slick-prev {
+  left: -80px !important;
+}
+
+.slick-next {
+  right: -80px !important;
 }

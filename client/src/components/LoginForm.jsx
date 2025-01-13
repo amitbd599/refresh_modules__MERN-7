@@ -1,7 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { ErrorToast, IsEmpty } from "../helper/helper";
+import { login } from "../apiRequest/api";
 
 const LoginForm = () => {
+  let [data, setData] = useState({ email: "a", password: "b" });
+
+  let submitData = async () => {
+    if (IsEmpty(data.email)) {
+      ErrorToast("Email is required.");
+    } else if (IsEmpty(data.password)) {
+      ErrorToast("Password is required.");
+    } else {
+      await login(data);
+
+      // allApiRequest call
+      //   let result = await allApiRequest("POST", "/login", data);
+      //   if (result.status === true) {
+      //     SuccessToast(result.msg);
+      //     return true;
+      //   } else {
+      //     ErrorToast(result.msg);
+      //     return false;
+      //   }
+      // }
+    }
+  };
+
   return (
     <section className='bg-gray-100 min-h-screen flex justify-center items-center'>
       <div className='relative py-3 sm:max-w-xl sm:mx-auto'>
@@ -16,6 +41,7 @@ const LoginForm = () => {
                   Email
                 </label>
                 <input
+                  onChange={(e) => setData({ ...data, email: e.target.value })}
                   className='border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
                   type='email'
                 />
@@ -25,6 +51,9 @@ const LoginForm = () => {
                   Password
                 </label>
                 <input
+                  onChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
                   className='border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full focus:border-blue-500 focus:ring-2 focus:ring-blue-500'
                   type='password'
                 />
@@ -32,7 +61,10 @@ const LoginForm = () => {
             </div>
 
             <div className='mt-5'>
-              <button className='py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg'>
+              <button
+                onClick={submitData}
+                className='py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg'
+              >
                 Login
               </button>
             </div>

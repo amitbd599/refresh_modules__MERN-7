@@ -22,3 +22,25 @@ export const apiRequest = async (apiEndPoint, reqBody) => {
   //     ErrorToast(result.data.msg);
   //   }
 };
+
+export const allApiRequest = async (method, apiEndPoint, reqBody) => {
+  let rawResponse = await fetch(`${baseURL}/${apiEndPoint}`, {
+    method: method,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reqBody),
+  });
+
+  const result = await rawResponse.json();
+
+  console.log(result);
+
+  return result;
+  //   if (result.data.status === "success") {
+  //     SuccessToast("Register success.");
+  //   } else {
+  //     ErrorToast(result.data.msg);
+  //   }
+};
