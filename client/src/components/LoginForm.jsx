@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ErrorToast, IsEmpty } from "../helper/helper";
 import { login } from "../apiRequest/api";
+import Loading from "./Loading";
 
 const LoginForm = () => {
-  let [data, setData] = useState({ email: "a", password: "b" });
+  let [loading, setLoading] = useState(false);
+  let navigate = useNavigate();
+  let [data, setData] = useState({ email: "", password: "" });
 
   let submitData = async () => {
     if (IsEmpty(data.email)) {
@@ -12,7 +15,16 @@ const LoginForm = () => {
     } else if (IsEmpty(data.password)) {
       ErrorToast("Password is required.");
     } else {
-      await login(data);
+      setLoading(true);
+      let result = await login(data);
+
+      if (result) {
+        // window.location.href = "/";
+        navigate("/");
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
 
       // allApiRequest call
       //   let result = await allApiRequest("POST", "/login", data);
@@ -29,6 +41,8 @@ const LoginForm = () => {
 
   return (
     <section className='bg-gray-100 min-h-screen flex justify-center items-center'>
+      {loading === true && <Loading />}
+
       <div className='relative py-3 sm:max-w-xl sm:mx-auto'>
         <div className='relative px-4 py-10 bg-white mx-8 md:mx-0 shadow rounded-3xl sm:p-10'>
           <div className='max-w-md mx-auto'>

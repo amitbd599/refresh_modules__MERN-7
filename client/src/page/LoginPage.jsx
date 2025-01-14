@@ -7,7 +7,7 @@ const LoginPage = () => {
   return (
     <>
       {/* MenuBar */}
-      <MenuBar />
+      {/* <MenuBar /> */}
 
       {/* LoginForm */}
       <LoginForm />

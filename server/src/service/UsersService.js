@@ -38,9 +38,10 @@ export const loginService = async (req, res) => {
       // Set cookie
       let options = {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        httpOnly: true,
+        httpOnly: false, // False means allow cookies in all browsers
         sameSite: "none",
         secure: true,
+        path: "/",
       };
 
       res.cookie("token", token, options);
@@ -55,5 +56,14 @@ export const loginService = async (req, res) => {
     }
   } catch (e) {
     return { status: false, error: e.toString(), msg: "Something went wrong." };
+  }
+};
+
+export const logoutService = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    return { status: true, msg: "Logout success." };
+  } catch (e) {
+    return { status: false, error: e };
   }
 };

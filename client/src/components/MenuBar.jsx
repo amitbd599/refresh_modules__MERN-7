@@ -1,7 +1,17 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-
+import Cookies from "js-cookie";
+import { logout } from "../apiRequest/api";
 const MenuBar = () => {
+  let isLogin = Cookies.get("token");
+
+  let logOutFunction = async () => {
+    let result = await logout();
+    if (result) {
+      window.location.reload();
+    }
+  };
+
   return (
     <section className='bg-white shadow-xl h-[80px] flex items-center'>
       <div className='container mx-auto'>
@@ -20,7 +30,7 @@ const MenuBar = () => {
                   </NavLink>
                 </li>
                 <li className='px-[16px] py-[8px] bg-gray-200 rounded-md'>
-                  <NavLink to='/'>About</NavLink>
+                  <NavLink to='/about'>About</NavLink>
                 </li>
                 <li className='px-[16px] py-[8px] bg-gray-200 rounded-md'>
                   <NavLink to='/'>Product</NavLink>
@@ -32,20 +42,37 @@ const MenuBar = () => {
             </nav>
           </div>
           <div className='col-span-3'>
-            <div className='flex gap-[10px]'>
-              <Link
-                to='/login'
-                className='px-[16px] py-[8px] bg-purple-700 text-white rounded-md'
-              >
-                Login
-              </Link>
-              <Link
-                to='/register'
-                className='px-[16px] py-[8px] bg-[#2563eb] text-white rounded-md'
-              >
-                Register
-              </Link>
-            </div>
+            {!!isLogin === true ? (
+              <div className='flex gap-[10px]'>
+                <Link
+                  to='/dashboard'
+                  className='px-[16px] py-[8px] bg-purple-700 text-white rounded-md'
+                >
+                  Go Dashboard
+                </Link>
+                <button
+                  onClick={logOutFunction}
+                  className='px-[16px] py-[8px] bg-purple-700 text-white rounded-md'
+                >
+                  LogOut
+                </button>
+              </div>
+            ) : (
+              <div className='flex gap-[10px]'>
+                <Link
+                  to='/login'
+                  className='px-[16px] py-[8px] bg-purple-700 text-white rounded-md'
+                >
+                  Login
+                </Link>
+                <Link
+                  to='/register'
+                  className='px-[16px] py-[8px] bg-[#2563eb] text-white rounded-md'
+                >
+                  Register
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

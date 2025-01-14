@@ -27,6 +27,19 @@ class ApiCall {
       return false;
     }
   }
+
+  async logout() {
+    let result = await axios.get(`${baseURL}/logout`, {
+      withCredentials: true,
+    });
+    if (result.data.status === true) {
+      SuccessToast(result.data.msg);
+      return true;
+    } else {
+      ErrorToast(result.data.msg);
+      return false;
+    }
+  }
 }
 
-export const { register, login } = new ApiCall();
+export const { register, login, logout } = new ApiCall();

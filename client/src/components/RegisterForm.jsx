@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ErrorToast, getBase64, IsEmpty } from "../helper/helper";
 import { register } from "../apiRequest/api";
 import { apiRequest, registerOne } from "../apiRequest/apiNew";
 const RegisterForm = () => {
+  let navigate = useNavigate();
   let { emailRef, passwordRef, firstNameRef, lastNameRef, phoneRef } = useRef();
   let [image, setImage] = useState("");
 
@@ -47,6 +48,11 @@ const RegisterForm = () => {
         firstNameRef.value = "";
         lastNameRef.value = "";
         phoneRef.value = "";
+      }
+
+      if (result) {
+        // window.location.href = "/";
+        navigate("/login");
       }
     }
   };

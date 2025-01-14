@@ -4,9 +4,9 @@ import MasterLayout from "../masterLayout/MasterLayout";
 
 const RegisterPage = () => {
   return (
-    <MasterLayout>
+    <>
       <RegisterForm />
-    </MasterLayout>
+    </>
   );
 };
 
