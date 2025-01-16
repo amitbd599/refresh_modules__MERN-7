@@ -20,9 +20,14 @@ const app = express();
 
 // App Use Default Middleware
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
-app.use(express.json({ limit: MAX_JSON_SIZE }));
+// app.use(express.json({ limit: MAX_JSON_SIZE }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: URL_ENCODE }));
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
 app.use(cookieParser());
 
 // App Use Limiter
@@ -43,6 +48,8 @@ mongoose
   });
 
 app.use("/api", router);
+
+app.use("/upload-file", express.static("uploads"));
 
 app.listen(PORT, () => {
   console.log("Server started on port " + PORT);

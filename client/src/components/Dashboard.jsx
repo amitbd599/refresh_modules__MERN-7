@@ -1,7 +1,80 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
+import {
+  createProduct,
+  deleteProduct,
+  fileUpload,
+  getAllProduct,
+} from "../apiRequest/api";
+import { ErrorToast, IsEmpty } from "../helper/helper";
 const Dashboard = () => {
+  let baseURL = "http://localhost:5000/upload-file/";
+  const [file, setFile] = useState(null);
+  const [product, setProduct] = useState([]);
+  let [data, setData] = useState({
+    productName: "",
+    productPrice: "",
+    productDes: "",
+    img: "",
+  });
+
+  let fileUploadFun = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      ErrorToast("Please select a file");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", file);
+    const result = await fileUpload(formData);
+    setData({ ...data, img: result?.data?.file?.[0]?.filename });
+  };
+
+  console.log(data);
+
+  let submitData = async () => {
+    if (IsEmpty(data.productName)) {
+      ErrorToast("Product Name is required.");
+    } else if (IsEmpty(data.productPrice)) {
+      ErrorToast("Product Price is required.");
+    } else if (IsEmpty(data.productDes)) {
+      ErrorToast("Product Des is required.");
+    } else if (IsEmpty(data.img)) {
+      ErrorToast("Product Image is required.");
+    } else {
+      let result = await createProduct(data);
+
+      // allApiRequest call
+      //   let result = await allApiRequest("POST", "/login", data);
+      //   if (result.status === true) {
+      //     SuccessToast(result.msg);
+      //     return true;
+      //   } else {
+      //     ErrorToast(result.msg);
+      //     return false;
+      //   }
+      // }
+    }
+  };
+
+  // get All Product
+  useEffect(() => {
+    (async () => {
+      let result = await getAllProduct();
+      setProduct(result);
+    })();
+  }, []);
+
+  // delete product
+  let deleteProductFun = async (id) => {
+    let result = await deleteProduct(id);
+    if (result) {
+      let result = await getAllProduct();
+      setProduct(result);
+    }
+  };
+
   return (
     <>
       {/* nav bar */}
@@ -29,6 +102,9 @@ const Dashboard = () => {
                   <label className='text-[14px] font-bold'>Product name:</label>
                   <div className='relative'>
                     <input
+                      onChange={(e) =>
+                        setData({ ...data, productName: e.target.value })
+                      }
                       className='w-full rounded-lg border border-gray-600 p-4 pe-12 text-sm shadow-sm '
                       type='text'
                     />
@@ -40,6 +116,9 @@ const Dashboard = () => {
                   </label>
                   <div className='relative'>
                     <input
+                      onChange={(e) =>
+                        setData({ ...data, productPrice: e.target.value })
+                      }
                       className='w-full rounded-lg border border-gray-600 p-4 pe-12 text-sm shadow-sm '
                       type='text'
                     />
@@ -50,13 +129,33 @@ const Dashboard = () => {
                     Product description:
                   </label>
                   <div className='relative'>
-                    <input className='w-full rounded-lg border border-gray-600 p-4 pe-12 text-sm shadow-sm ' />
+                    <input
+                      onChange={(e) =>
+                        setData({ ...data, productDes: e.target.value })
+                      }
+                      className='w-full rounded-lg border border-gray-600 p-4 pe-12 text-sm shadow-sm '
+                    />
                   </div>
+                </div>
+                <div className='col-span-4'>
+                  <label className='text-[14px] font-bold'>
+                    Product image:
+                  </label>
+                  <form onSubmit={fileUploadFun}>
+                    <div className='relative'>
+                      <input
+                        onChange={(e) => setFile(e.target.files[0])}
+                        type='file'
+                      />
+                      <button type='submit'>Upload</button>
+                    </div>
+                  </form>
                 </div>
               </div>
 
               <div className='flex items-center justify-between mt-3'>
                 <button
+                  onClick={submitData}
                   className='inline-block rounded-lg bg-purple-600 px-5 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
                   type='submit'
                 >
@@ -75,16 +174,17 @@ const Dashboard = () => {
                   <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
                     <tr>
                       <th scope='col' className='px-16 py-3'>
-                        <span className='sr-only'>Image</span>
+                        <span className='sr-only'>Product image</span>
+                      </th>
+                      <th scope='col' className='px-16 py-3'>
+                        <span className='sr-only'>Product name</span>
                       </th>
                       <th scope='col' className='px-6 py-3'>
-                        Product
+                        Product price
                       </th>
+
                       <th scope='col' className='px-6 py-3'>
-                        Qty
-                      </th>
-                      <th scope='col' className='px-6 py-3'>
-                        Price
+                        Product description
                       </th>
                       <th scope='col' className='px-6 py-3'>
                         Action
@@ -92,240 +192,34 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'>
-                      <td className='p-4'>
-                        <img
-                          src='https://flowbite.com/docs/images/products/apple-watch.png'
-                          className='w-16 md:w-32 max-w-full max-h-full'
-                          alt='Apple Watch'
-                        />
-                      </td>
-                      <td className='px-6 py-4 font-semibold text-gray-900 dark:text-white'>
-                        Apple Watch
-                      </td>
-                      <td className='px-6 py-4'>
-                        <div className='flex items-center'>
-                          <button
-                            className='inline-flex items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
-                            type='button'
+                    {product?.map((item, index) => (
+                      <tr
+                        key={index}
+                        className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'
+                      >
+                        <td className='p-4'>
+                          <img
+                            src={baseURL + item?.img}
+                            alt=''
+                            className='w-[80px] h-[80px] object-cover'
+                          />
+                        </td>
+                        <td className='p-4'>{item?.productName}</td>
+                        <td className='px-6 py-4 font-semibold text-gray-900 dark:text-white'>
+                          {item?.productPrice}
+                        </td>
+                        <td className='px-6 py-4'>{item?.productDes}</td>
+
+                        <td className='px-6 py-4'>
+                          <span
+                            onClick={() => deleteProductFun(item._id)}
+                            className='font-medium text-red-600 dark:text-red-500 hover:underline'
                           >
-                            <span className='sr-only'>Quantity button</span>
-                            <svg
-                              className='w-3 h-3'
-                              aria-hidden='true'
-                              xmlns='http://www.w3.org/2000/svg'
-                              fill='none'
-                              viewBox='0 0 18 2'
-                            >
-                              <path
-                                stroke='currentColor'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M1 1h16'
-                              />
-                            </svg>
-                          </button>
-                          <div>
-                            <input
-                              type='number'
-                              id='first_product'
-                              className='bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                              placeholder={1}
-                              required=''
-                            />
-                          </div>
-                          <button
-                            className='inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
-                            type='button'
-                          >
-                            <span className='sr-only'>Quantity button</span>
-                            <svg
-                              className='w-3 h-3'
-                              aria-hidden='true'
-                              xmlns='http://www.w3.org/2000/svg'
-                              fill='none'
-                              viewBox='0 0 18 18'
-                            >
-                              <path
-                                stroke='currentColor'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M9 1v16M1 9h16'
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                      <td className='px-6 py-4 font-semibold text-gray-900 dark:text-white'>
-                        $599
-                      </td>
-                      <td className='px-6 py-4'>
-                        <a
-                          href='#'
-                          className='font-medium text-red-600 dark:text-red-500 hover:underline'
-                        >
-                          Remove
-                        </a>
-                      </td>
-                    </tr>
-                    <tr className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'>
-                      <td className='p-4'>
-                        <img
-                          src='https://flowbite.com/docs/images/products/imac.png'
-                          className='w-16 md:w-32 max-w-full max-h-full'
-                          alt='Apple iMac'
-                        />
-                      </td>
-                      <td className='px-6 py-4 font-semibold text-gray-900 dark:text-white'>
-                        iMac 27"
-                      </td>
-                      <td className='px-6 py-4'>
-                        <div className='flex items-center'>
-                          <button
-                            className='inline-flex items-center justify-center p-1 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
-                            type='button'
-                          >
-                            <span className='sr-only'>Quantity button</span>
-                            <svg
-                              className='w-3 h-3'
-                              aria-hidden='true'
-                              xmlns='http://www.w3.org/2000/svg'
-                              fill='none'
-                              viewBox='0 0 18 2'
-                            >
-                              <path
-                                stroke='currentColor'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M1 1h16'
-                              />
-                            </svg>
-                          </button>
-                          <div className='ms-3'>
-                            <input
-                              type='number'
-                              id='first_product'
-                              className='bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                              placeholder={1}
-                              required=''
-                            />
-                          </div>
-                          <button
-                            className='inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
-                            type='button'
-                          >
-                            <span className='sr-only'>Quantity button</span>
-                            <svg
-                              className='w-3 h-3'
-                              aria-hidden='true'
-                              xmlns='http://www.w3.org/2000/svg'
-                              fill='none'
-                              viewBox='0 0 18 18'
-                            >
-                              <path
-                                stroke='currentColor'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M9 1v16M1 9h16'
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                      <td className='px-6 py-4 font-semibold text-gray-900 dark:text-white'>
-                        $2499
-                      </td>
-                      <td className='px-6 py-4'>
-                        <a
-                          href='#'
-                          className='font-medium text-red-600 dark:text-red-500 hover:underline'
-                        >
-                          Remove
-                        </a>
-                      </td>
-                    </tr>
-                    <tr className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600'>
-                      <td className='p-4'>
-                        <img
-                          src='https://flowbite.com/docs/images/products/iphone-12.png'
-                          className='w-16 md:w-32 max-w-full max-h-full'
-                          alt='iPhone 12'
-                        />
-                      </td>
-                      <td className='px-6 py-4 font-semibold text-gray-900 dark:text-white'>
-                        IPhone 12
-                      </td>
-                      <td className='px-6 py-4'>
-                        <div className='flex items-center'>
-                          <button
-                            className='inline-flex items-center justify-center p-1 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
-                            type='button'
-                          >
-                            <span className='sr-only'>Quantity button</span>
-                            <svg
-                              className='w-3 h-3'
-                              aria-hidden='true'
-                              xmlns='http://www.w3.org/2000/svg'
-                              fill='none'
-                              viewBox='0 0 18 2'
-                            >
-                              <path
-                                stroke='currentColor'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M1 1h16'
-                              />
-                            </svg>
-                          </button>
-                          <div className='ms-3'>
-                            <input
-                              type='number'
-                              id='first_product'
-                              className='bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                              placeholder={1}
-                              required=''
-                            />
-                          </div>
-                          <button
-                            className='inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
-                            type='button'
-                          >
-                            <span className='sr-only'>Quantity button</span>
-                            <svg
-                              className='w-3 h-3'
-                              aria-hidden='true'
-                              xmlns='http://www.w3.org/2000/svg'
-                              fill='none'
-                              viewBox='0 0 18 18'
-                            >
-                              <path
-                                stroke='currentColor'
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth={2}
-                                d='M9 1v16M1 9h16'
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                      <td className='px-6 py-4 font-semibold text-gray-900 dark:text-white'>
-                        $999
-                      </td>
-                      <td className='px-6 py-4'>
-                        <a
-                          href='#'
-                          className='font-medium text-red-600 dark:text-red-500 hover:underline'
-                        >
-                          Remove
-                        </a>
-                      </td>
-                    </tr>
+                            Remove
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>

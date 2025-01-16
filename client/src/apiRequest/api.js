@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ErrorToast, SuccessToast } from "../helper/helper";
+import { DeleteAlert, ErrorToast, SuccessToast } from "../helper/helper";
 
 let baseURL = "http://localhost:5000/api";
 
@@ -40,6 +40,62 @@ class ApiCall {
       return false;
     }
   }
+
+  async fileUpload(reqBody) {
+    let result = await axios.post(`${baseURL}/file-upload`, reqBody, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    if (result.data.status === true) {
+      SuccessToast(result.data.msg);
+      return result;
+    } else {
+      ErrorToast(result.data.msg);
+      return false;
+    }
+  }
+  async createProduct(reqBody) {
+    let result = await axios.post(`${baseURL}/create-product`, reqBody);
+    if (result.data.status === true) {
+      SuccessToast(result.data.msg);
+      return true;
+    } else {
+      ErrorToast(result.data.msg);
+      return false;
+    }
+  }
+  async getAllProduct() {
+    let result = await axios.get(`${baseURL}/all-product`);
+    if (result.data.status === true) {
+      return result?.data?.data;
+    } else {
+      ErrorToast(result.data.msg);
+      return false;
+    }
+  }
+  async deleteProduct(id) {
+    let isConfirmed = await DeleteAlert();
+
+    console.log(isConfirmed);
+
+    if (isConfirmed) {
+      let result = await axios.delete(`${baseURL}/delete-product/` + id);
+      if (result.data.status === true) {
+        SuccessToast(result.data.msg);
+        return true;
+      } else {
+        ErrorToast(result.data.msg);
+        return false;
+      }
+    }
+  }
 }
 
-export const { register, login, logout } = new ApiCall();
+export const {
+  register,
+  login,
+  logout,
+  createProduct,
+  getAllProduct,
+  fileUpload,
+  deleteProduct,
+} = new ApiCall();
