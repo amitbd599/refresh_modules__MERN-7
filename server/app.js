@@ -19,7 +19,24 @@ import {
 const app = express();
 
 // App Use Default Middleware
-app.use(cors({ origin: [process.env.CLIENT_URL, "https://refresh-modules-mern-7.vercel.app"], credentials: true }));
+app.use(
+  cors({
+    origin: [
+      process.env.CLIENT_URL,
+      "https://refresh-modules-mern-7.vercel.app",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Access-Control-Allow-Origin",
+    ],
+    exposedHeaders: ["ETag"],
+  })
+);
+
 // app.use(express.json({ limit: MAX_JSON_SIZE }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: URL_ENCODE }));
