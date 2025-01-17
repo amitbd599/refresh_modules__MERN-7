@@ -30,6 +30,7 @@
       "react-app/jest"
     ]
   },
+  "proxy": "https://refresh-modules-mern-7.vercel.app",
   "browserslist": {
     "production": [
       ">0.2%",
