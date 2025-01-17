@@ -23,6 +23,7 @@ app.use(
   cors({
     origin: [
       process.env.CLIENT_URL,
+      "https://refresh-modules-mern-7-client.vercel.app",
       "https://refresh-modules-mern-7.vercel.app",
     ],
     credentials: true,
