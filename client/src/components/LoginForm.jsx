@@ -16,7 +16,7 @@ const LoginForm = () => {
       ErrorToast("Password is required.");
     } else {
       setLoading(true);
-      let result = await login(data);
+      let result = await login(data)
 
       if (result) {
         // window.location.href = "/";
