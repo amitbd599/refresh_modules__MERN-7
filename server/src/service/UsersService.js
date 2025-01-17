@@ -37,11 +37,10 @@ export const loginService = async (req, res) => {
 
       // Set cookie
       let options = {
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        httpOnly: false, // False means allow cookies in all browsers
-        sameSite: "lax",
-        secure: false,
-        path: "/",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       };
 
       // const isProduction = process.env.NODE_ENV === "production";
