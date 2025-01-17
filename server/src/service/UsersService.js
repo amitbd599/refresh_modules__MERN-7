@@ -37,20 +37,12 @@ export const loginService = async (req, res) => {
 
       // Set cookie
       let options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        httpOnly: false, // False means allow cookies in all browsers
+        sameSite: "none",
+        secure: true,
+        path: "/",
       };
-
-      // const isProduction = process.env.NODE_ENV === "production";
-      // let options = {
-      //   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      //   httpOnly: false, // Prevent client-side access
-      //   secure: isProduction, // true in production
-      //   sameSite: isProduction ? "none" : "lax", // none for cross-site cookies
-      //   path: "/",
-      // };
 
       res.cookie("token", token, options);
       return {

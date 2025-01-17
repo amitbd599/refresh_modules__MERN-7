@@ -19,27 +19,9 @@ import {
 const app = express();
 
 // App Use Default Middleware
-app.use(
-  cors({
-    origin: [
-      process.env.CLIENT_URL,
-      "https://refresh-modules-mern-7-client.vercel.app",
-      "https://refresh-modules-mern-7.vercel.app",
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Access-Control-Allow-Origin",
-    ],
-    exposedHeaders: ["ETag"],
-  })
-);
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(express.json({ limit: MAX_JSON_SIZE }));
 
-// app.use(express.json({ limit: MAX_JSON_SIZE }));
-app.use(express.json());
 app.use(express.urlencoded({ extended: URL_ENCODE }));
 app.use(
   helmet({
@@ -53,7 +35,7 @@ const limiter = rateLimit({ windowMs: REQUEST_TIME, max: REQUEST_NUMBER });
 app.use(limiter);
 
 // Cache
-// app.set("etag", WEB_CACHE);
+app.set("etag", WEB_CACHE);
 
 // Database Connect
 mongoose
