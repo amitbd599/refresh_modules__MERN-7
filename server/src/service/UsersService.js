@@ -38,9 +38,9 @@ export const loginService = async (req, res) => {
       // Set cookie
       let options = {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        httpOnly: true, // False means allow cookies in all browsers
+        httpOnly: false, // False means allow cookies in all browsers
         sameSite: "none",
-        secure: true,
+        secure: false,
         path: "/",
       };
 
