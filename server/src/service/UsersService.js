@@ -36,22 +36,22 @@ export const loginService = async (req, res) => {
       let token = EncodeToken(data[0]["email"]);
 
       // Set cookie
-      // let options = {
-      //   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      //   httpOnly: false, // False means allow cookies in all browsers
-      //   sameSite: "none",
-      //   secure: true,
-      //   path: "/",
-      // };
-
-      const isProduction = process.env.NODE_ENV === "production";
       let options = {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        httpOnly: true, // Prevent client-side access
-        secure: isProduction, // true in production
-        sameSite: isProduction ? "none" : "lax", // none for cross-site cookies
+        httpOnly: true, // False means allow cookies in all browsers
+        sameSite: "none",
+        secure: true,
         path: "/",
       };
+
+      // const isProduction = process.env.NODE_ENV === "production";
+      // let options = {
+      //   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      //   httpOnly: false, // Prevent client-side access
+      //   secure: isProduction, // true in production
+      //   sameSite: isProduction ? "none" : "lax", // none for cross-site cookies
+      //   path: "/",
+      // };
 
       res.cookie("token", token, options);
       return {
