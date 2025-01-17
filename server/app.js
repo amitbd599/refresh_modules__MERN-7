@@ -53,7 +53,7 @@ const limiter = rateLimit({ windowMs: REQUEST_TIME, max: REQUEST_NUMBER });
 app.use(limiter);
 
 // Cache
-app.set("etag", WEB_CACHE);
+// app.set("etag", WEB_CACHE);
 
 // Database Connect
 mongoose
