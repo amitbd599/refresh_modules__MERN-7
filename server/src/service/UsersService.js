@@ -47,9 +47,9 @@ export const loginService = async (req, res) => {
       const isProduction = process.env.NODE_ENV === "production";
       let options = {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        httpOnly: true, // More secure if client-side access is not needed
-        sameSite: isProduction ? "none" : "lax", // 'none' for cross-site cookies
-        secure: isProduction, // Secure true for production
+        httpOnly: true, // Secure from client-side access
+        sameSite: isProduction ? "none" : "lax", // Use "none" for cross-site cookies
+        secure: isProduction, // Secure true only in production
         path: "/",
       };
 
