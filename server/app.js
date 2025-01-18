@@ -19,7 +19,15 @@ import {
 const app = express();
 
 // App Use Default Middleware
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(
+  cors({
+    credentials: true,
+    origin: [
+      "http://localhost:3000",
+      "https://refresh-modules-mern-7-client.vercel.app",
+    ],
+  })
+);
 app.use(express.json({ limit: MAX_JSON_SIZE }));
 
 app.use(express.urlencoded({ extended: URL_ENCODE }));
