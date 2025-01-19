@@ -18,6 +18,7 @@ import {
 
 const app = express();
 
+app.use(cookieParser());
 // App Use Default Middleware
 app.use(
   cors({
@@ -36,7 +37,6 @@ app.use(
     crossOriginResourcePolicy: false,
   })
 );
-app.use(cookieParser());
 
 // App Use Limiter
 const limiter = rateLimit({ windowMs: REQUEST_TIME, max: REQUEST_NUMBER });

@@ -2,6 +2,7 @@ import {
   loginService,
   logoutService,
   registerService,
+  verifyAuthService,
 } from "../service/UsersService.js";
 
 //! Register
@@ -19,5 +20,11 @@ export const login = async (req, res) => {
 //! Logout
 export const logout = async (req, res) => {
   let result = await logoutService(req, res);
+  return res.json(result);
+};
+
+//! verify auth
+export const verifyAuth = async (req, res) => {
+  let result = await verifyAuthService(req, res);
   return res.json(result);
 };

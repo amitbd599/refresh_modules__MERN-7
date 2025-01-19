@@ -41,6 +41,17 @@ class ApiCall {
       return false;
     }
   }
+  async verify() {
+    let result = await axios.get(`${baseURL}/verify-auth`, {
+      withCredentials: true,
+    });
+    if (result.data.status === true) {
+      return true;
+    } else {
+      ErrorToast(result.data.msg);
+      return false;
+    }
+  }
 
   async fileUpload(reqBody) {
     let result = await axios.post(`${baseURL}/file-upload`, reqBody, {
@@ -55,7 +66,9 @@ class ApiCall {
     }
   }
   async createProduct(reqBody) {
-    let result = await axios.post(`${baseURL}/create-product`, reqBody);
+    let result = await axios.post(`${baseURL}/create-product`, reqBody, {
+      withCredentials: true,
+    });
     if (result.data.status === true) {
       SuccessToast(result.data.msg);
       return true;
@@ -65,7 +78,9 @@ class ApiCall {
     }
   }
   async getAllProduct() {
-    let result = await axios.get(`${baseURL}/all-product`);
+    let result = await axios.get(`${baseURL}/all-product`, {
+      withCredentials: true,
+    });
     if (result.data.status === true) {
       return result?.data?.data;
     } else {
@@ -79,7 +94,9 @@ class ApiCall {
     console.log(isConfirmed);
 
     if (isConfirmed) {
-      let result = await axios.delete(`${baseURL}/delete-product/` + id);
+      let result = await axios.delete(`${baseURL}/delete-product/` + id, {
+        withCredentials: true,
+      });
       if (result.data.status === true) {
         SuccessToast(result.data.msg);
         return true;
@@ -99,4 +116,5 @@ export const {
   getAllProduct,
   fileUpload,
   deleteProduct,
+  verify,
 } = new ApiCall();

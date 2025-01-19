@@ -38,13 +38,12 @@ export const loginService = async (req, res) => {
       // Set cookie
       let options = {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-        httpOnly: false, // False means allow cookies in all browsers
-        sameSite: "none",
-        secure: true,
-        path: "/",
+        httpOnly: true, // Prevents client-side access to the cookie
+        sameSite: "none", // Required for cross-site cookies
+        secure: process.env.NODE_ENV === "production", // true in production
       };
 
-      res.cookie("token", token, options);
+      await res.cookie("token", token, options);
       return {
         status: true,
         token: token,
@@ -65,5 +64,12 @@ export const logoutService = async (req, res) => {
     return { status: true, msg: "Logout success." };
   } catch (e) {
     return { status: false, error: e };
+  }
+};
+export const verifyAuthService = async () => {
+  try {
+    return { status: true };
+  } catch (e) {
+    return { status: false, msg: "Authentication failed." };
   }
 };

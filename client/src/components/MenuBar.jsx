@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
-import { logout } from "../apiRequest/api";
+import { logout, verify } from "../apiRequest/api";
 const MenuBar = () => {
-  let isLogin = Cookies.get("token");
+  let [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      let result = await verify();
+      if (result) {
+        setIsLogin(true);
+      } else {
+        setIsLogin(false);
+      }
+    })();
+  }, []);
 
   let logOutFunction = async () => {
     let result = await logout();
